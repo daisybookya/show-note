@@ -1,0 +1,107 @@
+@import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
+.card-container{
+  width: 90%;
+  margin: 0 auto 30px;
+}
+h1,h2,h3{
+  color: #fff;
+  font-family: 'Noto Sans TC', sans-serif;
+  margin-bottom: 0;
+}
+h1{
+  /* margin-top: 0.5em; */
+  text-align: left;
+}
+.sort-item{
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sort-item > span{
+  margin-left: 35px;
+  margin-right: 5px;
+}
+.card-txt{
+  text-align: left;
+}
+.card-txt > div:first-child{
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+}
+.card-txt p{
+  margin-bottom: 10px;
+}
+.card-txt .ant-card-head-title{
+  white-space: normal;
+}
+.card-txt .ant-card-body{
+  font-size: 15px;
+}
+.card-txt .ant-card-body{
+min-height: 240px;
+}
+/**-----------------user note---------------**/
+
+.btn-open{
+  position: absolute;
+  top: 35px;
+  right: 5%;
+  padding: 10px 5px;
+  background: #eee;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn-open:hover{
+  background: rgb(151, 205, 255);
+}
+.btn-open span{
+  display: block;
+}
+.btn-close{
+  position: absolute;
+  top: 50px;
+  right: 10px;
+}
+.note-list i{
+  color: #40a9ff;
+  font-size: 1em;
+  padding-right: 3px;
+}
+.note-list h4{
+  background: #f3f3f3;
+  padding: 5px;
+}
+.note-meta{
+  position: relative;
+}
+/**--------------------------------**/
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
