@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon,List, Card } from 'antd';
 import {timeFormat,createLink} from './CommonFun'
 
-const CardList = (props:{dataList:Object,addShowNote:Function}) => {
+const CardList = (props:{dataList:Object,addShowNote:Function,loaded:boolean}) => {
     const handleAddItem = (id) =>{
         props.addShowNote(id);
     }
@@ -11,6 +11,7 @@ const CardList = (props:{dataList:Object,addShowNote:Function}) => {
              <List
                 locale={{emptyText: '無展演資訊'}}
                 grid={{ gutter: 24, column: 3 }}
+                loading={props.loaded}
                 dataSource={props.dataList}
                 pagination={{
                     pageSize: 12,

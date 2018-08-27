@@ -1,9 +1,9 @@
 import React from 'react';
-import {typeArea,typeDate} from '../definition/TypeDefinition'
+import {typeArea,typeDate,typeMusic} from '../definition/TypeDefinition'
 import BtnCategory from './BtnCategory'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { doInitList,doSortByType,doSortList,doAddNote } from '../../actions/ActionCreator'
+import { doInitList,doSortByType,doSortList,doAddNote,doFetchType,doLoadList,doFetchList } from '../../actions/ActionCreator'
 import { ModalWarn,ModalSuccess} from './ModalMsg'
 import { filterList } from './CommonFun'
 import Title from './Title'
@@ -12,17 +12,25 @@ import { Layout } from 'antd';
 
 const { Header, Content } = Layout;
 let newList;
+let selectedArea:string = 'none';
 const ShowList = (props:{list:Object}) => {
     
+    //處理類別
+    const handleCategory= (category:String) => {
+        props.doFetchType(category)
+        props.doFetchList() //載入列表
+        props.doLoadList(true)
+    }
     //處理地區排列
-    const handleSortByArea = (area) => {
+    const handleSortByArea = (area:string) => {
+        selectedArea = area;
         newList = [...props.list]; //從總資料獲取
         newList = sortByArea(newList,area) //依照地區過濾的新列表
         newList = sortByDate(newList,props.sortType) //依照日期遠近排列
         props.doSortList(newList) //儲存進state
     }
     //處理日期排列
-    const handleSortByDate = (value) => {
+    const handleSortByDate = (value:string) => {
         props.doSortByType(value) //儲存type值進state
         let newitem = sortByDate(props.sortList,value)
         props.doSortList(newitem)        
@@ -34,21 +42,21 @@ const ShowList = (props:{list:Object}) => {
             case 'north':
                 newList = newList.filter((item)=>{
                     if(item.showInfo.length !== 0){
-                        return item.showInfo[0].location.search(/台北|臺北|新北|基隆|桃園/g) > -1
+                        return item.showInfo[0].location.search(/台北|臺北|新北|基隆|桃園|宜蘭|新竹/g) > -1
                     }
                 })
             break;
             case 'middle':
                 newList = newList.filter((item)=>{
                     if(item.showInfo.length !== 0){
-                        return item.showInfo[0].location.search(/台中|臺中|南投/g) > -1
+                        return item.showInfo[0].location.search(/台中|臺中|南投|彰化|雲林|苗栗/g) > -1
                     }
                 })
             break;
             case 'south':
                 newList = newList.filter((item)=>{
                     if(item.showInfo.length !== 0){
-                        return item.showInfo[0].location.search(/台南|臺南|嘉義|高雄/g) > -1
+                        return item.showInfo[0].location.search(/台南|臺南|嘉義|高雄|屏東|澎湖/g) > -1
                     }
                 })
             break;
@@ -89,7 +97,6 @@ const ShowList = (props:{list:Object}) => {
             ModalSuccess() //提醒使用者加入成功
         };
     }
-
     
     return ( 
         <div className="content">
@@ -99,25 +106,35 @@ const ShowList = (props:{list:Object}) => {
                 </Header>
                 <Content>
                     <div className="sort-item">
-                        <span className="txt-type">類別 : 獨立音樂</span>
-                        <span className="txt-type">地區 : </span><BtnCategory handleBtnValue={handleSortByArea} dataList={typeArea} defaultValue='3'></BtnCategory>
+                        <span className="txt-type">類別 : </span><BtnCategory handleBtnValue={handleCategory} dataList={typeMusic} defaultValue='0'></BtnCategory>
+                        <span className="txt-type">地區 : </span><BtnCategory handleBtnValue={handleSortByArea} dataList={typeArea} defaultValue='4'></BtnCategory>
                         <span className="txt-type">日期排序 : </span><BtnCategory handleBtnValue={handleSortByDate} dataList={typeDate} defaultValue='0'></BtnCategory>
                     </div>
-                    <CardList dataList={props.sortList} addShowNote={handleDataToNote}></CardList>
+                    <CardList dataList={props.sortList} addShowNote={handleDataToNote} loaded={props.isLoaded}></CardList>
                 </Content>
             </Layout>
         </div>
      );
 }
 const mapStateToProps = store =>{
+    
     return{
       list:store.List,
       sortList:store.sortList,
       sortType:store.sortByType,
-      note:store.note
+      note:store.note,
+      isLoaded:store.isLoaded
     }
 }
 const mapDispatchToProps = (dispatch)=>{
-    return bindActionCreators({doInitList,doSortByType,doSortList,doAddNote},dispatch)
+    return bindActionCreators({
+        doInitList,
+        doSortByType,
+        doSortList,
+        doLoadList,
+        doFetchList,
+        doAddNote,
+        doFetchType
+    },dispatch)
   }
 export default connect(mapStateToProps, mapDispatchToProps)(ShowList)

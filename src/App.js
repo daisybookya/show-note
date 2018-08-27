@@ -4,7 +4,7 @@ import UserNote from './components/userNote/NoteContainer'
 import { BackTop,Icon } from 'antd';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { doFetchList,doInitNote } from './actions/ActionCreator'
+import { doFetchList,doInitNote,doLoadList } from './actions/ActionCreator'
 import './css/App.css';
 
 class App extends Component {
@@ -40,6 +40,6 @@ class App extends Component {
   }
 }
 const mapDispatchToProps = (dispatch)=>{
-  return bindActionCreators({doFetchList,doInitNote},dispatch)
+  return bindActionCreators({doFetchList,doInitNote,doLoadList},dispatch)
 }
 export default connect(null,mapDispatchToProps)(App)

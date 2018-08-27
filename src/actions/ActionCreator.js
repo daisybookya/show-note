@@ -2,6 +2,8 @@ import {ADD_NOTE,
         DEL_NOTE,
         INIT_NOTE,
         FETCH_LIST,
+        FETCH_TYPE,
+        LOADING_LIST,
         INIT_LIST,
         SORT_LIST,
         SORT_TYPE,
@@ -14,8 +16,23 @@ export const doFetchList = ()=>{
         callback:(data:Object,dispatch:Function)=> {
             dispatch(doInitList(data));
             dispatch(doSortList(data));
+            dispatch(doLoadList(false));
         }
 
+    }
+}
+export const doFetchType = (category:String)=>{
+    //初始列表
+    return{
+        type:FETCH_TYPE,
+        category
+    }
+}
+export const doLoadList = (isLoaded:Boolean)=>{
+    //初始列表
+    return{
+        type:LOADING_LIST,
+        isLoaded
     }
 }
 export const doInitList = (List:Object)=>{

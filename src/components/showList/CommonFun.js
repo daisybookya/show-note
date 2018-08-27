@@ -19,6 +19,7 @@ export function filterList(data,type){
     let thisYearList = filterYear(0,data)
     let nextYearList = filterYear(1,data)
     let itemList:Object;
+    console.log(`filterList/`,data,type)
     if(type === 'near'){
         thisYearList = sortByNear(thisYearList)
         nextYearList = sortByNear(nextYearList)
