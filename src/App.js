@@ -18,8 +18,14 @@ class App extends Component {
   loadDataToNote = ()=>{
     //從localStorage取得資料
     let data = localStorage.getItem('note');
+    
     if(data === null) return false;
     let initData = JSON.parse(data);
+    if(data === '[]'){
+      initData = {'indie':[],'classic':[]}
+      
+    }
+    //console.log(`loadDataToNote/`,initData)
     this.props.doInitNote(initData); //儲存進state
   }
   handleCloseNote = (isClose)=>{

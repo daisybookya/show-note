@@ -1,6 +1,6 @@
 import React from 'react';
 import { List,Icon} from 'antd';
-import {timeFormat,createLink} from '../showList/CommonFun'
+import {timeFormat,createLink,checkOnSale,checkOnPrice,linkToSource} from '../showList/CommonFun'
 
 const NoteList = (props:{noteData:Object,handleDelItem:String}) => {
     
@@ -26,8 +26,8 @@ const NoteList = (props:{noteData:Object,handleDelItem:String}) => {
                         <p><Icon type="clock-circle-o" /> 日期時間 > {timeFormat(item.showInfo)}</p>
                         <p><Icon type="home" /> 展演地點 > {item.showInfo[0].locationName}</p>
                         <p><Icon type="environment-o" /> 展演地址 > {item.showInfo[0].location} / {createLink(item.showInfo)}</p>
-                        <p><Icon type="pay-circle" /> 門票價格 > {item.showInfo[0].price.length === 0 ? '免費入場':item.showInfo[0].price}</p>
-                        <p><Icon type="shopping-cart" /> 是否販售中 > {item.showInfo[0].price.length === 0 ? '免費入場':'現正熱賣中'}</p></div> }
+                        <p><Icon type="pay-circle" /> 門票價格(元) > {checkOnPrice(item.showInfo)} / 檢索相關資訊 > {linkToSource(item.title)}</p>
+                        <p><Icon type="shopping-cart" /> 是否販售中 > {checkOnSale(item.showInfo)}</p></div> }
                     />
                 </List.Item>
                 )}

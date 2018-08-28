@@ -11,6 +11,9 @@ function isExpired(data:Object,expired:boolean){
     let nowYear = new Date().getFullYear();
     let nowMonth = Number(new Date().getMonth())+1;
     let nowDay = new Date().getDate();
+    if(data === undefined){
+        return false
+    }
     let newList = data.filter(item=>{
             let itemYear = parseFloat(item.showInfo[0].time.slice(0,4));
             let itemMonth = parseFloat(item.showInfo[0].time.slice(5,7));
@@ -32,10 +35,11 @@ const NoteContainer = (props:{isOpen:boolean,onCloseNote:Function}) => {
     }
     //移除筆記
     const handleDeleteData = (id)=>{
-        let delItem = props.note.filter(item=>{
+        let category = props.category;
+        let delItem = props.note[category].filter(item=>{
             return item.UID === id;
         })
-        props.doDelNote(delItem)
+        props.doDelNote(delItem,category) //刪除資料，指定類別
     }
     return ( 
         <Drawer
@@ -53,11 +57,18 @@ const NoteContainer = (props:{isOpen:boolean,onCloseNote:Function}) => {
           }}
         >
             <Tabs defaultActiveKey="1">
-                <TabPane tab={<span><Icon type="notification" />近期的展演</span>} key="1">
-                    <NoteList noteData={isExpired(props.note,false)} handleDelItem={handleDeleteData}></NoteList>
+                <TabPane tab={<span><Icon type="notification" />獨立音樂近期展演</span>} key="1">
+                    
+                    <NoteList noteData={isExpired(props.note['indie'],false)} handleDelItem={handleDeleteData}></NoteList>
                 </TabPane>
-                <TabPane tab={<span><Icon type="folder-open" />已過期展演</span>} key="2">
-                <NoteList noteData={isExpired(props.note,true)} handleDelItem={handleDeleteData}></NoteList>
+                <TabPane tab={<span><Icon type="notification" />古典音樂近期展演</span>} key="2">
+                    <NoteList noteData={isExpired(props.note['classic'],false)} handleDelItem={handleDeleteData}></NoteList>
+                </TabPane>
+                <TabPane tab={<span><Icon type="folder-open" />已過期獨立展演</span>} key="3">
+                    <NoteList noteData={isExpired(props.note['indie'],true)} handleDelItem={handleDeleteData}></NoteList>
+                </TabPane>
+                <TabPane tab={<span><Icon type="folder-open" />已過期古典展演</span>} key="4">
+                    <NoteList noteData={isExpired(props.note['classic'],true)} handleDelItem={handleDeleteData}></NoteList>
                 </TabPane>
             </Tabs>
         </Drawer>
@@ -65,8 +76,10 @@ const NoteContainer = (props:{isOpen:boolean,onCloseNote:Function}) => {
 }
  
 const mapStateToProps = store =>{
+    //console.log(store)
     return{
       note:store.note,
+      category:store.category
     }
 }
 const mapDispatchToProps = (dispatch)=>{

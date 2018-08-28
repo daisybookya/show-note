@@ -1,26 +1,32 @@
 import {INIT_NOTE,ADD_NOTE,DEL_NOTE} from '../actions/ActionType'
 
-export default function Note(state:Object = [],action:Object){
+let initState={
+    'indie':[],
+    'classic':[]
+}
+export default function Note(state:Object = initState,action:Object){
     switch (action.type){
         case INIT_NOTE:
-            return [...action.Note]
+            return {...action.Note}
         
         case ADD_NOTE:
-            let newItem = [action.Note, ...state];
-            localStorage.setItem('note',JSON.stringify(newItem));
-            return newItem;
+            let newItem = [action.Note, ...state[action.category]];
+            let totalItem = {...state}
+            totalItem[action.category] = newItem
+            localStorage.setItem('note',JSON.stringify(totalItem));
+            return totalItem;
 
         case DEL_NOTE:
-            let hadNote = state.findIndex((item)=>{
+            let hadNote = state[action.category].findIndex((item)=>{
                 return item.UID === action.Note[0].UID
             })
             if(hadNote > -1){
-                let newNote = [...state]
-                newNote.splice(hadNote,1)
-                localStorage.setItem('note',JSON.stringify(newNote));
-                return [...newNote]
+                let totalItem = {...state}
+                totalItem[action.category].splice(hadNote,1)
+                localStorage.setItem('note',JSON.stringify(totalItem));
+                return totalItem
             }
-            return [...state]
+            return {...state}
 
         default:
         return state;

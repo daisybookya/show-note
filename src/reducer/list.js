@@ -1,4 +1,4 @@
-import {INIT_LIST,SORT_LIST,SORT_TYPE,FETCH_TYPE,LOADING_LIST} from '../actions/ActionType'
+import {INIT_LIST,SORT_LIST,SORT_TYPE,FETCH_TYPE,LOADING_LIST,SORT_AREA} from '../actions/ActionType'
 
 export function List(state:Object = [],action:Object){
     switch (action.type){
@@ -24,6 +24,16 @@ export function sortByType(state='near',action:Object){
     switch (action.type){
         case SORT_TYPE:
             return action.keyWord
+        
+        default:
+        return state;
+    }
+}
+
+export function sortByArea(state='none',action:Object){
+    switch (action.type){
+        case SORT_AREA:
+            return action.area
         
         default:
         return state;

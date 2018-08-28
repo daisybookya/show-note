@@ -7,6 +7,7 @@ import {ADD_NOTE,
         INIT_LIST,
         SORT_LIST,
         SORT_TYPE,
+        SORT_AREA
     } from './ActionType'
 //handle show list
 export const doFetchList = ()=>{
@@ -56,6 +57,13 @@ export const doSortByType = (keyWord:string)=>{
         keyWord
     }
 }
+export const doSortByArea = (area:string)=>{
+    //排列類型
+    return{
+        type:SORT_AREA,
+        area
+    }
+}
 
 //handle user Note
 export const doInitNote = (Note:Object)=>{
@@ -65,18 +73,18 @@ export const doInitNote = (Note:Object)=>{
         Note
     }
 }
-export const doAddNote = (Note:Object)=>{
+export const doAddNote = (Note:Object,category:string)=>{
     //新增筆記
     return{
         type:ADD_NOTE,
-        Note
+        Note,category
     }
 }
-export const doDelNote = (Note:Object)=>{
+export const doDelNote = (Note:Object,category:string)=>{
     //刪除筆記
     return{
         type:DEL_NOTE,
-        Note
+        Note,category
     }
 }
 

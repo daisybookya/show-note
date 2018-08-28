@@ -3,7 +3,7 @@ import {typeArea,typeDate,typeMusic} from '../definition/TypeDefinition'
 import BtnCategory from './BtnCategory'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { doInitList,doSortByType,doSortList,doAddNote,doFetchType,doLoadList,doFetchList } from '../../actions/ActionCreator'
+import { doInitList,doSortByType,doSortList,doAddNote,doFetchType,doLoadList,doFetchList,doSortByArea } from '../../actions/ActionCreator'
 import { ModalWarn,ModalSuccess} from './ModalMsg'
 import { filterList } from './CommonFun'
 import Title from './Title'
@@ -18,15 +18,17 @@ const ShowList = (props:{list:Object}) => {
     //處理類別
     const handleCategory= (category:String) => {
         props.doFetchType(category)
+        props.doSortByArea('none')
         props.doFetchList() //載入列表
         props.doLoadList(true)
     }
     //處理地區排列
     const handleSortByArea = (area:string) => {
-        selectedArea = area;
-        newList = [...props.list]; //從總資料獲取
+        selectedArea = area
+        newList = [...props.list] //從總資料獲取
         newList = sortByArea(newList,area) //依照地區過濾的新列表
         newList = sortByDate(newList,props.sortType) //依照日期遠近排列
+        props.doSortByArea(area)
         props.doSortList(newList) //儲存進state
     }
     //處理日期排列
@@ -56,7 +58,14 @@ const ShowList = (props:{list:Object}) => {
             case 'south':
                 newList = newList.filter((item)=>{
                     if(item.showInfo.length !== 0){
-                        return item.showInfo[0].location.search(/台南|臺南|嘉義|高雄|屏東|澎湖/g) > -1
+                        return item.showInfo[0].location.search(/台南|臺南|嘉義|高雄|屏東/g) > -1
+                    }
+                })
+            break;
+            case 'east':
+                newList = newList.filter((item)=>{
+                    if(item.showInfo.length !== 0){
+                        return item.showInfo[0].location.search(/花蓮|台東|臺東|金門|澎湖|馬祖/g) > -1
                     }
                 })
             break;
@@ -83,9 +92,10 @@ const ShowList = (props:{list:Object}) => {
     //新增展演到筆記
     const handleDataToNote = (id)=>{
         //檢查是否已加過
-        let isAdded = props.note.filter((data)=>{
+        let nowCategory = props.category;
+        let isAdded = props.note[nowCategory].filter((data)=>{
             return data.UID === id
-        });
+        })
         if(isAdded.length > 0){
             ModalWarn() //提醒使用者已加過
         }else{
@@ -93,7 +103,7 @@ const ShowList = (props:{list:Object}) => {
             let newItem = props.sortList.find((item)=>{
                 return item.UID === id
             })
-            props.doAddNote(newItem)
+            props.doAddNote(newItem,nowCategory) //新增資料，指定類別
             ModalSuccess() //提醒使用者加入成功
         };
     }
@@ -106,9 +116,9 @@ const ShowList = (props:{list:Object}) => {
                 </Header>
                 <Content>
                     <div className="sort-item">
-                        <span className="txt-type">類別 : </span><BtnCategory handleBtnValue={handleCategory} dataList={typeMusic} defaultValue='0'></BtnCategory>
-                        <span className="txt-type">地區 : </span><BtnCategory handleBtnValue={handleSortByArea} dataList={typeArea} defaultValue='4'></BtnCategory>
-                        <span className="txt-type">日期排序 : </span><BtnCategory handleBtnValue={handleSortByDate} dataList={typeDate} defaultValue='0'></BtnCategory>
+                        <span className="txt-type">類別 : </span><BtnCategory handleBtnValue={handleCategory} dataList={typeMusic} value={props.category}></BtnCategory>
+                        <span className="txt-type">地區 : </span><BtnCategory handleBtnValue={handleSortByArea} dataList={typeArea} value={props.sortArea}></BtnCategory>
+                        <span className="txt-type">日期排序 : </span><BtnCategory handleBtnValue={handleSortByDate} dataList={typeDate} value={props.sortType}></BtnCategory>
                     </div>
                     <CardList dataList={props.sortList} addShowNote={handleDataToNote} loaded={props.isLoaded}></CardList>
                 </Content>
@@ -117,12 +127,13 @@ const ShowList = (props:{list:Object}) => {
      );
 }
 const mapStateToProps = store =>{
-    
     return{
       list:store.List,
       sortList:store.sortList,
       sortType:store.sortByType,
+      category:store.category,
       note:store.note,
+      sortArea:store.sortByArea,
       isLoaded:store.isLoaded
     }
 }
@@ -134,6 +145,7 @@ const mapDispatchToProps = (dispatch)=>{
         doLoadList,
         doFetchList,
         doAddNote,
+        doSortByArea,
         doFetchType
     },dispatch)
   }
