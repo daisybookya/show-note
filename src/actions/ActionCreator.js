@@ -7,7 +7,9 @@ import {ADD_NOTE,
         INIT_LIST,
         SORT_LIST,
         SORT_TYPE,
-        SORT_AREA
+        SORT_AREA,
+        SORT_CITY,
+        CITY_ARRAY
     } from './ActionType'
 //handle show list
 export const doFetchList = ()=>{
@@ -55,6 +57,20 @@ export const doSortByType = (keyWord:string)=>{
     return{
         type:SORT_TYPE,
         keyWord
+    }
+}
+export const doSortByCity = (keyWord:string)=>{
+    //排列類型
+    return{
+        type:SORT_CITY,
+        keyWord
+    }
+}
+export const doAddCityArray = (cityList:Array)=>{
+    //排列類型
+    return{
+        type:CITY_ARRAY,
+        cityList
     }
 }
 export const doSortByArea = (area:string)=>{

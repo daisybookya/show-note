@@ -5,6 +5,8 @@ export const INIT_LIST = 'INIT_LIST'
 export const SORT_LIST = 'SORT_LIST'
 export const SORT_TYPE = 'SORT_TYPE'
 export const SORT_AREA = 'SORT_AREA'
+export const SORT_CITY = 'SORT_CITY'
+export const CITY_ARRAY = 'CITY_ARRAY'
 export const LOADING_LIST = 'LOADING_LIST'
 
 //handle user Note

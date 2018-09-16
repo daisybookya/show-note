@@ -3,11 +3,13 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { doDelNote } from '../../actions/ActionCreator'
 import { Drawer,Icon,Tabs  } from 'antd';
+import {typeMusic} from '../definition/TypeDefinition'
 import NoteList from './NoteList'
 
 const TabPane = Tabs.TabPane;
 //過濾是否活動已經過期
 function isExpired(data:Object,expired:boolean){
+   
     let nowYear = new Date().getFullYear();
     let nowMonth = Number(new Date().getMonth())+1;
     let nowDay = new Date().getDate();
@@ -29,18 +31,18 @@ function isExpired(data:Object,expired:boolean){
     return newList;
 }
 const NoteContainer = (props:{isOpen:boolean,onCloseNote:Function}) => {
-
+    const categoryLen = Object.keys(props.note)
     const handleCloseBtn = ()=>{
         props.onCloseNote(false)
     }
     //移除筆記
-    const handleDeleteData = (id)=>{
-        let category = props.category;
+    const handleDeleteData = (id,category)=>{
         let delItem = props.note[category].filter(item=>{
             return item.UID === id;
         })
         props.doDelNote(delItem,category) //刪除資料，指定類別
     }
+
     return ( 
         <Drawer
           title={<span><Icon style={{ fontSize: '1.3em',verticalAlign:'bottom',color: '#096dd9'}} type="schedule" /> My Show Note</span>}
@@ -56,27 +58,27 @@ const NoteContainer = (props:{isOpen:boolean,onCloseNote:Function}) => {
             backgroundImage:'url('+process.env.PUBLIC_URL+'/image/wood.png)'
           }}
         >
-            <Tabs defaultActiveKey="1">
-                <TabPane tab={<span><Icon type="notification" />獨立音樂近期展演</span>} key="1">
-                    
-                    <NoteList noteData={isExpired(props.note['indie'],false)} handleDelItem={handleDeleteData}></NoteList>
-                </TabPane>
-                <TabPane tab={<span><Icon type="notification" />古典音樂近期展演</span>} key="2">
-                    <NoteList noteData={isExpired(props.note['classic'],false)} handleDelItem={handleDeleteData}></NoteList>
-                </TabPane>
-                <TabPane tab={<span><Icon type="folder-open" />已過期獨立展演</span>} key="3">
-                    <NoteList noteData={isExpired(props.note['indie'],true)} handleDelItem={handleDeleteData}></NoteList>
-                </TabPane>
-                <TabPane tab={<span><Icon type="folder-open" />已過期古典展演</span>} key="4">
-                    <NoteList noteData={isExpired(props.note['classic'],true)} handleDelItem={handleDeleteData}></NoteList>
-                </TabPane>
+            <Tabs defaultActiveKey="0">
+                {
+                    categoryLen.map((category,index)=>
+                        <TabPane tab={<span><Icon type="notification" />{typeMusic[category]}展演</span>} key={index}>
+                            <NoteList noteData={isExpired(props.note[category],false)} noteCategory={category} handleDelItem={handleDeleteData}></NoteList>
+                        </TabPane>
+                    )
+                }
+                {
+                    categoryLen.map((category,index)=>
+                        <TabPane tab={<span><Icon type="folder-open" />已過期{typeMusic[category]}展演</span>} key={index+categoryLen.length}>
+                            <NoteList noteData={isExpired(props.note[category],true)} noteCategory={category} handleDelItem={handleDeleteData}></NoteList>
+                        </TabPane>
+                    )
+                }
             </Tabs>
         </Drawer>
      );
 }
  
 const mapStateToProps = store =>{
-    //console.log(store)
     return{
       note:store.note,
       category:store.category

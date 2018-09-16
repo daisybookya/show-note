@@ -1,4 +1,12 @@
-import {INIT_LIST,SORT_LIST,SORT_TYPE,FETCH_TYPE,LOADING_LIST,SORT_AREA} from '../actions/ActionType'
+import {INIT_LIST,
+    SORT_LIST,
+    SORT_TYPE,
+    FETCH_TYPE,
+    LOADING_LIST,
+    SORT_AREA,
+    SORT_CITY,
+    CITY_ARRAY
+} from '../actions/ActionType'
 
 export function List(state:Object = [],action:Object){
     switch (action.type){
@@ -34,6 +42,24 @@ export function sortByArea(state='none',action:Object){
     switch (action.type){
         case SORT_AREA:
             return action.area
+        
+        default:
+        return state;
+    }
+}
+export function sortByCity(state='請選擇縣市',action:Object){
+    switch (action.type){
+        case SORT_CITY:
+            return action.keyWord
+        
+        default:
+        return state;
+    }
+}
+export function cityArray(state=['請選擇縣市'],action:Object){
+    switch (action.type){
+        case CITY_ARRAY:
+            return action.cityList
         
         default:
         return state;

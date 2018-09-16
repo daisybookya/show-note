@@ -6,7 +6,8 @@ const fetchList = store => next => action =>{
 
     const _JSONUrl = {
         indie:'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=5',
-        classic:'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=1'
+        classic:'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=1',
+        dance:'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=3'
     }
     const fetchUrl = _JSONUrl[store.getState().category]
     const sortDateType = store.getState().sortByType

@@ -1,18 +1,19 @@
 import React from 'react';
-import {typeArea,typeDate,typeMusic} from '../definition/TypeDefinition'
+import {typeArea,typeDate,typeMusic,typeBk} from '../definition/TypeDefinition'
 import BtnCategory from './BtnCategory'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { doInitList,doSortByType,doSortList,doAddNote,doFetchType,doLoadList,doFetchList,doSortByArea } from '../../actions/ActionCreator'
+import { doInitList,doSortByType,doSortList,doAddNote,doFetchType,doLoadList,doFetchList,doSortByArea,doSortByCity,doAddCityArray } from '../../actions/ActionCreator'
 import { ModalWarn,ModalSuccess} from './ModalMsg'
-import { filterList } from './CommonFun'
+import { filterList,getDateStr } from './CommonFun'
 import Title from './Title'
 import CardList from './CardList'
-import { Layout } from 'antd';
+import { Layout,Select } from 'antd';
 
 const { Header, Content } = Layout;
+const Option = Select.Option;
+let nowCategory = 'indie';
 let newList;
-let selectedArea:string = 'none';
 const ShowList = (props:{list:Object}) => {
     
     //處理類別
@@ -21,15 +22,36 @@ const ShowList = (props:{list:Object}) => {
         props.doSortByArea('none')
         props.doFetchList() //載入列表
         props.doLoadList(true)
+        nowCategory = category;
+        props.doAddCityArray(['請選擇縣市'])
+        props.doSortByCity('請選擇縣市')
     }
     //處理地區排列
     const handleSortByArea = (area:string) => {
-        selectedArea = area
         newList = [...props.list] //從總資料獲取
         newList = sortByArea(newList,area) //依照地區過濾的新列表
         newList = sortByDate(newList,props.sortType) //依照日期遠近排列
         props.doSortByArea(area)
         props.doSortList(newList) //儲存進state
+        if(area === 'none'){
+            props.doAddCityArray(['請選擇縣市'])
+        }else{
+            let cityAry = filterCityOption(newList)
+            props.doAddCityArray(cityAry)
+        }
+        props.doSortByCity('請選擇縣市')
+    }
+    //過濾地區中城市顯示在option上
+    const filterCityOption = (data:object)=>{
+        let result = [];
+        data.map((item)=>{
+            let newItem = item.showInfo[0].location.replace(/[.*{}()|[\]\\]|\d|\s/g,'')
+            newItem = newItem.replace(/臺/g,'台').slice(0,2)
+            if(!result.includes(newItem)){
+                result.push(newItem)
+            }
+        })
+        return result
     }
     //處理日期排列
     const handleSortByDate = (value:string) => {
@@ -76,6 +98,19 @@ const ShowList = (props:{list:Object}) => {
         return newList;
 
     }
+    const handleCityChange = (city:string) =>{
+        props.doSortByCity(city)
+    }
+    //過濾選中的縣市
+    const handleFilterCity = (city:string,data:object)=>{
+        if(city === '請選擇縣市') return data
+        return data.filter(item=>{
+            if(item.showInfo.length !== 0){
+                return item.showInfo[0].location.search(city) > -1
+            }
+            return item
+        })
+    }
     //列表依照日期排列
     const sortByDate = (data,value)=>{
         let newList = [...data];
@@ -103,7 +138,8 @@ const ShowList = (props:{list:Object}) => {
             let newItem = props.sortList.find((item)=>{
                 return item.UID === id
             })
-            props.doAddNote(newItem,nowCategory) //新增資料，指定類別
+            let newData = Object.assign({},newItem,{addTime:getDateStr()})
+            props.doAddNote(newData,nowCategory) //新增資料，指定類別
             ModalSuccess() //提醒使用者加入成功
         };
     }
@@ -111,16 +147,21 @@ const ShowList = (props:{list:Object}) => {
     return ( 
         <div className="content">
             <Layout>
-                <Header style={{'height':'136px',padding:'0 5%'}}>
+                <Header style={{'height':'136px',padding:'0 5%',backgroundImage:'url('+process.env.PUBLIC_URL+'/image/'+typeBk[nowCategory][0]+')',borderBottom:`7px solid ${typeBk[nowCategory][1]}`}}>
                     <Title></Title>
                 </Header>
                 <Content>
                     <div className="sort-item">
                         <span className="txt-type">類別 : </span><BtnCategory handleBtnValue={handleCategory} dataList={typeMusic} value={props.category}></BtnCategory>
                         <span className="txt-type">地區 : </span><BtnCategory handleBtnValue={handleSortByArea} dataList={typeArea} value={props.sortArea}></BtnCategory>
+                        <Select defaultValue={props.cityArray[0]} value={props.sortCity} notFoundContent="請選擇縣市" style={{ width: 120,marginLeft:'15px' }} onChange={handleCityChange}>
+                        {
+                            props.cityArray.map(item=><Option value={item} key={item}>{item}</Option>)
+                        }
+                        </Select>
                         <span className="txt-type">日期排序 : </span><BtnCategory handleBtnValue={handleSortByDate} dataList={typeDate} value={props.sortType}></BtnCategory>
                     </div>
-                    <CardList dataList={props.sortList} addShowNote={handleDataToNote} loaded={props.isLoaded}></CardList>
+                    <CardList color={typeBk[nowCategory][1]} dataList={handleFilterCity(props.sortCity,props.sortList)} addShowNote={handleDataToNote} loaded={props.isLoaded}></CardList>
                 </Content>
             </Layout>
         </div>
@@ -134,7 +175,9 @@ const mapStateToProps = store =>{
       category:store.category,
       note:store.note,
       sortArea:store.sortByArea,
-      isLoaded:store.isLoaded
+      isLoaded:store.isLoaded,
+      cityArray:store.cityArray,
+      sortCity:store.sortByCity
     }
 }
 const mapDispatchToProps = (dispatch)=>{
@@ -146,7 +189,9 @@ const mapDispatchToProps = (dispatch)=>{
         doFetchList,
         doAddNote,
         doSortByArea,
-        doFetchType
+        doFetchType,
+        doSortByCity,
+        doAddCityArray
     },dispatch)
   }
 export default connect(mapStateToProps, mapDispatchToProps)(ShowList)

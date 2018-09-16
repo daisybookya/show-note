@@ -5,6 +5,8 @@ import { BackTop,Icon } from 'antd';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { doFetchList,doInitNote,doLoadList } from './actions/ActionCreator'
+import { noteInitData } from './components/definition/TypeDefinition'
+
 import './css/App.css';
 
 class App extends Component {
@@ -18,11 +20,10 @@ class App extends Component {
   loadDataToNote = ()=>{
     //從localStorage取得資料
     let data = localStorage.getItem('note');
-    
     if(data === null) return false;
     let initData = JSON.parse(data);
     if(data === '[]'){
-      initData = {'indie':[],'classic':[]}
+      initData = noteInitData
       
     }
     //console.log(`loadDataToNote/`,initData)

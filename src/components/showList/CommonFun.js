@@ -36,6 +36,21 @@ export function checkOnPrice(value){
     let newPrice = initPrice.replace(/,|;/g,'/')
     return newPrice;
 }
+export function getDateStr(){
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth()+1;
+    const day = date.getDate();
+
+    function addZero(num){
+        let str = String(num)
+        if(str.length < 2){
+            return `0${str}`
+        }
+        return str
+    }
+    return `${year}-${addZero(month)}-${addZero(day)}`
+}
 export function filterList(data,type){
     let thisYearList = filterYear(0,data)
     let nextYearList = filterYear(1,data)

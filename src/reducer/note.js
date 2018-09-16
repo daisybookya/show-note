@@ -1,9 +1,7 @@
 import {INIT_NOTE,ADD_NOTE,DEL_NOTE} from '../actions/ActionType'
+import { noteInitData } from '../components/definition/TypeDefinition'
 
-let initState={
-    'indie':[],
-    'classic':[]
-}
+let initState = noteInitData;
 export default function Note(state:Object = initState,action:Object){
     switch (action.type){
         case INIT_NOTE:
