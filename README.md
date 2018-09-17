@@ -1,5 +1,7 @@
 # Show notes
-獨立音樂/古典音樂/舞蹈表演展演資訊列表+記事本功能 
+獨立音樂/古典音樂/舞蹈表演展演資訊列表+記事本功能
+
+[webLink](https://daisybookya.github.io/show-note/)
 
 ### 基本功能
 
